@@ -1,0 +1,9 @@
+name: glopos
+
+packages:
+  - packages/**
+
+scripts:
+  check_formatting: melos exec -- flutter format --set-exit-if-changed .
+  analyze: melos exec -- flutter analyze --fatal-infos
+  test: melos exec -- flutter test
