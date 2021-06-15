@@ -1,0 +1,11 @@
+include: ../../../all_lint_rules.yaml
+
+analyzer:
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+
+linter:
+  rules:
+    public_member_api_docs: false
+    diagnostic_describe_all_properties: false
