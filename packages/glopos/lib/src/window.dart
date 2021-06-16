@@ -281,10 +281,10 @@ class _WindowPositioned extends ParentDataWidget<_WindowLayoutParentData> {
         parentData._alignment != alignment) {
       parentData
         .._scenePosition = scenePosition
-        .._alignment = alignment
-        .._isDirty = true;
+        .._alignment = alignment;
 
-      (renderObject.parent! as _RenderWindowLayout).markNeedsPaint();
+      (renderObject.parent! as _RenderWindowLayout)
+          ._childParentDataChanged(renderObject as RenderBox);
     }
   }
 
@@ -302,7 +302,6 @@ class _WindowPositioned extends ParentDataWidget<_WindowLayoutParentData> {
 
 /// The [ParentData] for children of [_WindowLayout].
 class _WindowLayoutParentData extends ContainerBoxParentData<RenderBox> {
-  bool _isDirty = true;
   bool _isVisible = true;
   Offset _scenePosition = Offset.zero;
   Alignment _alignment = Alignment.center;
@@ -314,6 +313,8 @@ class _RenderWindowLayout extends RenderBox
         ContainerRenderObjectMixin<RenderBox,
             ContainerBoxParentData<RenderBox>>,
         RenderBoxContainerDefaultsMixin {
+  bool _performedLayout = false;
+
   @override
   final sizedByParent = true;
 
@@ -328,28 +329,39 @@ class _RenderWindowLayout extends RenderBox
   @override
   void performLayout() {
     visitChildren((child) {
-      (child.parentData! as _WindowLayoutParentData)._isDirty = true;
-      child.layout(BoxConstraints.loose(Size.infinite));
+      child.layout(BoxConstraints.loose(Size.infinite), parentUsesSize: true);
     });
+
+    _performedLayout = true;
   }
 
   Matrix4 _calculateSceneToWindowTransform() {
+    assert(_performedLayout);
     final sceneRenderObject = _findSceneRenderObject();
     return Matrix4.inverted(getTransformTo(sceneRenderObject));
   }
 
-  void _updateChildren() {
-    late final sceneToWindow = _calculateSceneToWindowTransform();
+  void _childParentDataChanged(RenderBox child) {
+    if (!_performedLayout) {
+      return;
+    }
+
+    if (_updateChildParentData(child, _calculateSceneToWindowTransform())) {
+      markNeedsPaint();
+    }
+  }
+
+  void _updateAllChildParentData() {
+    final sceneToWindow = _calculateSceneToWindowTransform();
 
     visitChildren((child) {
-      final parentData = child.parentData! as _WindowLayoutParentData;
-      if (parentData._isDirty) {
-        _updateChild(child as RenderBox, sceneToWindow);
-      }
+      _updateChildParentData(child as RenderBox, sceneToWindow);
     });
   }
 
-  void _updateChild(RenderBox child, Matrix4 sceneToWindow) {
+  /// Updates the parent data of [child] and returns whether a repaint is
+  /// necessary because of the update.
+  bool _updateChildParentData(RenderBox child, Matrix4 sceneToWindow) {
     final parentData = child.parentData! as _WindowLayoutParentData;
 
     final localPosition =
@@ -359,16 +371,19 @@ class _RenderWindowLayout extends RenderBox
     final offset = localPosition - alignmentOffset;
     final childRect = offset & child.size;
     final isVisible = !paintBounds.intersect(childRect).isEmpty;
+    final isVisibleChanged = parentData._isVisible != isVisible;
 
     parentData
       ..offset = offset
-      .._isVisible = isVisible
-      .._isDirty = false;
+      .._isVisible = isVisible;
+
+    // We need to repaint if this child is visible or its visibility changed.
+    return isVisible || isVisibleChanged;
   }
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    _updateChildren();
+    _updateAllChildParentData();
 
     var child = firstChild;
     while (child != null) {
@@ -382,7 +397,7 @@ class _RenderWindowLayout extends RenderBox
 
   @override
   bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
-    _updateChildren();
+    _updateAllChildParentData();
 
     var child = lastChild;
     while (child != null) {
@@ -407,7 +422,7 @@ class _RenderWindowLayout extends RenderBox
 
   @override
   void applyPaintTransform(covariant RenderObject child, Matrix4 transform) {
-    _updateChildren();
+    _updateAllChildParentData();
     super.applyPaintTransform(child, transform);
   }
 
