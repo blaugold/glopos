@@ -1,3 +1,2 @@
-export 'src/scene.dart' hide RenderScene;
+export 'src/core.dart';
 export 'src/spotlight.dart';
-export 'src/window.dart';

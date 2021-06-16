@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:glopos/src/scene.dart';
+import 'package:glopos/glopos.dart';
 
 void main() {
   group('SceneElement', () {
@@ -22,15 +22,23 @@ void main() {
       );
     });
 
-    test('notifies listeners if properties change', () {
+    test('notifies listeners when enabled changes', () {
       TestElement()
         ..addListener(expectAsync0(() {}, count: 0))
-        ..enabled = true
+        ..enabled = true;
+
+      TestElement()
+        ..addListener(expectAsync0(() {}, count: 1))
+        ..enabled = false;
+    });
+
+    test('notifies position listeners when position changes', () {
+      TestElement()
+        ..addPositionListener(expectAsync0(() {}, count: 0))
         ..position = Offset.zero;
 
       TestElement()
-        ..addListener(expectAsync0(() {}, count: 2))
-        ..enabled = false
+        ..addPositionListener(expectAsync0(() {}, count: 1))
         ..position = Offset.infinite;
     });
   });
@@ -52,27 +60,15 @@ void main() {
     });
 
     testWidgets(
-      'uses RenderScene RenderObject',
-      (tester) async {
-        await tester.pumpWidget(Scene(
-          elements: const [],
-          child: Container(),
-        ));
-
-        expect(
-          tester.firstRenderObject(find.byType(Scene)),
-          isA<RenderScene>(),
-        );
-      },
-    );
-
-    testWidgets(
       'throw error when Scene.of cannot find Scene',
       (tester) async {
-        await tester.pumpWidget(Builder(builder: (context) {
-          Scene.of(context);
-          return Container();
-        }));
+        await tester.pumpWidget(Directionality(
+          textDirection: TextDirection.ltr,
+          child: Builder(builder: (context) {
+            Scene.of(context);
+            return Container();
+          }),
+        ));
 
         expect(
           tester.takeException(),
@@ -97,11 +93,14 @@ void main() {
           return Container();
         }
 
-        await tester.pumpWidget(ValueListenableBuilder<List<SceneElement>>(
-          valueListenable: elements,
-          builder: (context, elements, _) => Scene(
-            elements: elements,
-            child: Builder(builder: builder),
+        await tester.pumpWidget(Directionality(
+          textDirection: TextDirection.ltr,
+          child: ValueListenableBuilder<List<SceneElement>>(
+            valueListenable: elements,
+            builder: (context, elements, _) => Scene(
+              elements: elements,
+              child: Builder(builder: builder),
+            ),
           ),
         ));
 

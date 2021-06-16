@@ -16,6 +16,12 @@ class _SpotlightDemoState extends State<SpotlightDemo> {
   final spotlight = Spotlight();
 
   @override
+  void dispose() {
+    spotlight.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: const Text('Spotlight'),

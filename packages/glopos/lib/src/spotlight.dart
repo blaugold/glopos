@@ -3,8 +3,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'scene.dart';
-import 'window.dart';
+import 'core.dart';
 
 /// A [SceneElement] which represents a spotlight.
 class Spotlight extends SceneElement {
@@ -173,12 +172,8 @@ class SpotlitBox extends StatelessWidget {
 
         // Spotlight
         const Positioned.fill(
-          child: RepaintBoundary(
-            child: ClipRRect(
-              child: Window(
-                delegate: SpotlightDelegate(),
-              ),
-            ),
+          child: Window(
+            delegate: SpotlightDelegate(),
           ),
         ),
 
