@@ -169,7 +169,7 @@ class _WindowState<T extends SceneElement> extends State<Window<T>> {
     final alignment =
         widget.delegate.alignment(element).resolve(Directionality.of(context));
 
-    state.widget = WindowPositioned(
+    state.widget = _WindowPositioned(
       key: ValueKey(element),
       alignment: alignment,
       scenePosition: element.position,
@@ -234,18 +234,18 @@ class _WindowState<T extends SceneElement> extends State<Window<T>> {
   @override
   Widget build(BuildContext context) {
     _elementChanged = false;
-    return WindowLayout(children: _widgets);
+    return _WindowLayout(children: _widgets);
   }
 }
 
 /// Layout which positions its children in the [Scene] coordinate system.
 ///
-/// The [children] of this widget must use [WindowPositioned] to position
+/// The [children] of this widget must use [_WindowPositioned] to position
 /// them self.
-class WindowLayout extends MultiChildRenderObjectWidget {
+class _WindowLayout extends MultiChildRenderObjectWidget {
   /// Creates a layout which positions its children in the [Scene] coordinate
   /// system.
-  WindowLayout({
+  _WindowLayout({
     Key? key,
     required List<Widget> children,
   }) : super(key: key, children: children);
@@ -256,11 +256,11 @@ class WindowLayout extends MultiChildRenderObjectWidget {
 }
 
 /// Widget to position a [child] in the [Scene] coordinate system in a
-/// [WindowLayout].
-class WindowPositioned extends ParentDataWidget<WindowLayoutParentData> {
+/// [_WindowLayout].
+class _WindowPositioned extends ParentDataWidget<_WindowLayoutParentData> {
   /// Creates a widget to position a [child] in the [Scene] coordinate system
-  /// in a [WindowLayout].
-  const WindowPositioned({
+  /// in a [_WindowLayout].
+  const _WindowPositioned({
     Key? key,
     required this.scenePosition,
     required this.alignment,
@@ -275,7 +275,7 @@ class WindowPositioned extends ParentDataWidget<WindowLayoutParentData> {
 
   @override
   void applyParentData(RenderObject renderObject) {
-    final parentData = renderObject.parentData! as WindowLayoutParentData;
+    final parentData = renderObject.parentData! as _WindowLayoutParentData;
 
     if (parentData._scenePosition != scenePosition ||
         parentData._alignment != alignment) {
@@ -289,7 +289,7 @@ class WindowPositioned extends ParentDataWidget<WindowLayoutParentData> {
   }
 
   @override
-  Type get debugTypicalAncestorWidgetClass => WindowLayout;
+  Type get debugTypicalAncestorWidgetClass => _WindowLayout;
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -300,8 +300,8 @@ class WindowPositioned extends ParentDataWidget<WindowLayoutParentData> {
   }
 }
 
-/// The [ParentData] for children of [WindowLayout].
-class WindowLayoutParentData extends ContainerBoxParentData<RenderBox> {
+/// The [ParentData] for children of [_WindowLayout].
+class _WindowLayoutParentData extends ContainerBoxParentData<RenderBox> {
   bool _isDirty = true;
   bool _isVisible = true;
   Offset _scenePosition = Offset.zero;
@@ -319,7 +319,7 @@ class _RenderWindowLayout extends RenderBox
 
   @override
   void setupParentData(RenderObject child) {
-    child.parentData = WindowLayoutParentData();
+    child.parentData = _WindowLayoutParentData();
   }
 
   @override
@@ -328,7 +328,7 @@ class _RenderWindowLayout extends RenderBox
   @override
   void performLayout() {
     visitChildren((child) {
-      (child.parentData! as WindowLayoutParentData)._isDirty = true;
+      (child.parentData! as _WindowLayoutParentData)._isDirty = true;
       child.layout(BoxConstraints.loose(Size.infinite));
     });
   }
@@ -342,7 +342,7 @@ class _RenderWindowLayout extends RenderBox
     late final sceneToWindow = _calculateSceneToWindowTransform();
 
     visitChildren((child) {
-      final parentData = child.parentData! as WindowLayoutParentData;
+      final parentData = child.parentData! as _WindowLayoutParentData;
       if (parentData._isDirty) {
         _updateChild(child as RenderBox, sceneToWindow);
       }
@@ -350,7 +350,7 @@ class _RenderWindowLayout extends RenderBox
   }
 
   void _updateChild(RenderBox child, Matrix4 sceneToWindow) {
-    final parentData = child.parentData! as WindowLayoutParentData;
+    final parentData = child.parentData! as _WindowLayoutParentData;
 
     final localPosition =
         MatrixUtils.transformPoint(sceneToWindow, parentData._scenePosition);
@@ -372,7 +372,7 @@ class _RenderWindowLayout extends RenderBox
 
     var child = firstChild;
     while (child != null) {
-      final childParentData = child.parentData! as WindowLayoutParentData;
+      final childParentData = child.parentData! as _WindowLayoutParentData;
       if (childParentData._isVisible) {
         context.paintChild(child, childParentData.offset + offset);
       }
@@ -386,7 +386,7 @@ class _RenderWindowLayout extends RenderBox
 
     var child = lastChild;
     while (child != null) {
-      final childParentData = child.parentData! as WindowLayoutParentData;
+      final childParentData = child.parentData! as _WindowLayoutParentData;
       if (childParentData._isVisible) {
         final isHit = result.addWithPaintOffset(
           offset: childParentData.offset,
