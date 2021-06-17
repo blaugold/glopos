@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'home_page.dart';
+import 'pages/home.dart';
 import 'theme.dart';
 
 class GloposExampleApp extends StatelessWidget {

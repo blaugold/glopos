@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'moving_window.dart';
-import 'spotlight_demo.dart';
+import 'spotlight_window.dart';
+import 'window_cards.dart';
 
 final _backgroundColor = Colors.grey.shade900;
 
@@ -42,12 +43,16 @@ class HomePage extends StatelessWidget {
         body: ListView(
           children: [
             DemoPageLink(
-              title: 'Spotlight',
-              page: (context) => const SpotlightDemo(),
+              title: 'Spotlight Menu',
+              page: (context) => const SpotlightMenuPage(),
             ),
             DemoPageLink(
               title: 'Moving Window',
-              page: (context) => const MovingWindowDemo(),
+              page: (context) => const MovingWindowPage(),
+            ),
+            DemoPageLink(
+              title: 'Window Cards',
+              page: (context) => const WindowCardsPage(),
             ),
           ],
         ),

@@ -5,14 +5,14 @@ final _backgroundColor = Colors.grey.shade900;
 final _borderColor = Colors.grey.shade800;
 final _textColor = Colors.grey.shade200;
 
-class SpotlightDemo extends StatefulWidget {
-  const SpotlightDemo({Key? key}) : super(key: key);
+class SpotlightMenuPage extends StatefulWidget {
+  const SpotlightMenuPage({Key? key}) : super(key: key);
 
   @override
-  _SpotlightDemoState createState() => _SpotlightDemoState();
+  _SpotlightMenuPageState createState() => _SpotlightMenuPageState();
 }
 
-class _SpotlightDemoState extends State<SpotlightDemo> {
+class _SpotlightMenuPageState extends State<SpotlightMenuPage> {
   final spotlight = Spotlight();
 
   @override
@@ -24,12 +24,12 @@ class _SpotlightDemoState extends State<SpotlightDemo> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: const Text('Spotlight'),
+          title: const Text('Spotlight Menu'),
         ),
         backgroundColor: _backgroundColor,
         body: SizedBox.expand(
-          child: BindSpotlightToMouse(
-            spotlight: spotlight,
+          child: BindElementToMouse(
+            element: spotlight,
             child: Scene(
               elements: [spotlight],
               child: Container(
@@ -39,15 +39,15 @@ class _SpotlightDemoState extends State<SpotlightDemo> {
                   spacing: 10,
                   runSpacing: 10,
                   children: const [
-                    _Panel(title: Text('Language')),
-                    _Panel(title: Text('Devices')),
-                    _Panel(title: Text('System')),
-                    _Panel(title: Text('Security')),
-                    _Panel(title: Text('Printers')),
-                    _Panel(title: Text('Network')),
-                    _Panel(title: Text('Storage')),
-                    _Panel(title: Text('Energy')),
-                    _Panel(title: Text('Updates')),
+                    MenuItem(title: Text('Language')),
+                    MenuItem(title: Text('Devices')),
+                    MenuItem(title: Text('System')),
+                    MenuItem(title: Text('Security')),
+                    MenuItem(title: Text('Printers')),
+                    MenuItem(title: Text('Network')),
+                    MenuItem(title: Text('Storage')),
+                    MenuItem(title: Text('Energy')),
+                    MenuItem(title: Text('Updates')),
                   ],
                 ),
               ),
@@ -57,8 +57,8 @@ class _SpotlightDemoState extends State<SpotlightDemo> {
       );
 }
 
-class _Panel extends StatelessWidget {
-  const _Panel({
+class MenuItem extends StatelessWidget {
+  const MenuItem({
     Key? key,
     required this.title,
   }) : super(key: key);

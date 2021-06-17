@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:glopos/glopos.dart';
 
-class MovingWindowDemo extends StatefulWidget {
-  const MovingWindowDemo({Key? key}) : super(key: key);
+class MovingWindowPage extends StatefulWidget {
+  const MovingWindowPage({Key? key}) : super(key: key);
 
   @override
-  _MovingWindowDemoState createState() => _MovingWindowDemoState();
+  _MovingWindowPageState createState() => _MovingWindowPageState();
 }
 
-class _MovingWindowDemoState extends State<MovingWindowDemo> {
+class _MovingWindowPageState extends State<MovingWindowPage> {
   final _spotlight = Spotlight(position: const Offset(200, 200));
 
   var _windowPosition = const Offset(200, 200);
