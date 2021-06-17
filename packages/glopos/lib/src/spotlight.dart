@@ -51,43 +51,7 @@ class Spotlight extends SceneElement {
   }
 }
 
-/// [Widget] which binds the position of a [Spotlight] to the hover position
-/// of the mouse.
-///
-/// The [spotlight] is enabled when the mouse enters the space occupied by
-/// [child] and disabled when the mouse leaves the space.
-class BindSpotlightToMouse extends StatelessWidget {
-  /// Creates a [Widget] which binds the position of a [Spotlight] to the hover
-  /// position of the mouse.
-  const BindSpotlightToMouse({
-    Key? key,
-    required this.spotlight,
-    required this.child,
-  }) : super(key: key);
 
-  /// The [Spotlight] to bind to the hover position of the mouse.
-  final Spotlight spotlight;
-
-  /// The [Widget] which defines the area in which the mouse is tracked.
-  ///
-  /// The [spotlight] is enabled while the mouse is within the area of this
-  /// [Widget].
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) => MouseRegion(
-        onHover: (event) => spotlight.position = event.localPosition,
-        onEnter: (_) => spotlight.enabled = true,
-        onExit: (_) => spotlight.enabled = false,
-        child: child,
-      );
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<Spotlight>('spotlight', spotlight));
-  }
-}
 
 /// [WindowDelegate] which implements the visual representation for
 /// [Spotlight].
