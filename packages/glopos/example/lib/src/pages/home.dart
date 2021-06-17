@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'moving_window.dart';
-import 'spotlight_window.dart';
+import 'spotlight_menu.dart';
 import 'window_cards.dart';
 
 final _backgroundColor = Colors.grey.shade900;

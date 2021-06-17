@@ -70,9 +70,9 @@ class MenuItem extends StatelessWidget {
         height: 80,
         width: 260,
         child: SpotlitBox(
+          borderColor: _borderColor,
           backgroundColor: _backgroundColor,
           backgroundIllumination: .05,
-          borderColor: _borderColor,
           child: Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(20),
