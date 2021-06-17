@@ -406,11 +406,17 @@ class _WindowState<T extends SceneElement> extends State<Window<T>> {
   Widget build(BuildContext context) {
     _elementChanged = false;
 
-    return ClipRect(
-      clipBehavior: widget.clipBehavior,
-      child: Stack(
-        children: _children,
-      ),
+    Widget child = Stack(
+      children: _children,
     );
+
+    if (widget.clipBehavior != Clip.none) {
+      child = ClipRect(
+        clipBehavior: widget.clipBehavior,
+        child: child,
+      );
+    }
+
+    return child;
   }
 }
