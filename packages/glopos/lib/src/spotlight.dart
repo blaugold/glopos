@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'clipping.dart';
 import 'core.dart';
 
 /// A [SceneElement] which represents a spotlight.
@@ -51,8 +52,6 @@ class Spotlight extends SceneElement {
   }
 }
 
-
-
 /// [WindowDelegate] which implements the visual representation for
 /// [Spotlight].
 class SpotlightDelegate extends WindowDelegate<Spotlight> {
@@ -81,8 +80,7 @@ class SpotlightDelegate extends WindowDelegate<Spotlight> {
   }
 }
 
-/// A box whose border and background are illuminated by [Spotlight]s in the
-/// [Scene] above this [Widget] in the tree.
+/// A box whose border and background are illuminated by [Spotlight]s.
 class SpotlitBox extends StatelessWidget {
   /// Creates a box whose border and background are illuminated by [Spotlight]s
   /// in the [Scene] above this [Widget] in the tree.
@@ -92,6 +90,7 @@ class SpotlitBox extends StatelessWidget {
     this.borderColor,
     required this.backgroundColor,
     this.backgroundIllumination = 0,
+    this.clipBehavior = Clip.hardEdge,
     required this.child,
   })  : assert(borderWidth >= 0),
         assert(backgroundIllumination >= 0 && backgroundIllumination <= 1),
@@ -108,6 +107,9 @@ class SpotlitBox extends StatelessWidget {
 
   /// The amount of light which is reflected by the background.
   final double backgroundIllumination;
+
+  /// The type of cliping this widget uses.
+  final Clip clipBehavior;
 
   /// The content of this box.
   final Widget child;
@@ -135,9 +137,10 @@ class SpotlitBox extends StatelessWidget {
         ),
 
         // Spotlight
-        const Positioned.fill(
+        Positioned.fill(
           child: Window(
-            delegate: SpotlightDelegate(),
+            clipBehavior: clipBehavior,
+            delegate: const SpotlightDelegate(),
           ),
         ),
 
@@ -158,6 +161,85 @@ class SpotlitBox extends StatelessWidget {
       ..add(DoubleProperty('borderWidth', borderWidth))
       ..add(ColorProperty('borderColor', borderColor))
       ..add(ColorProperty('background', backgroundColor))
-      ..add(DoubleProperty('backgroundIllumination', backgroundIllumination));
+      ..add(DoubleProperty('backgroundIllumination', backgroundIllumination))
+      ..add(DiagnosticsProperty('clipBehavior', clipBehavior));
+  }
+}
+
+/// A widget whose shape is defined by a [ShapeBorder], It's border and
+/// background are illuminated by [Spotlight]s.
+class SpotlitShape extends StatelessWidget {
+  /// Creates a widget whose shape is defined by a [ShapeBorder], It's border
+  /// and background are illuminated by [Spotlight]s.
+  const SpotlitShape({
+    Key? key,
+    required this.border,
+    required this.backgroundColor,
+    this.backgroundIllumination = 0,
+    this.clipBehavior = Clip.antiAlias,
+    required this.child,
+  })  : assert(backgroundIllumination >= 0 && backgroundIllumination <= 1),
+        super(key: key);
+
+  /// The shape of the border.
+  final ShapeBorder border;
+
+  /// The [Color] of the background.
+  final Color backgroundColor;
+
+  /// The amount of light which is reflected by the background.
+  final double backgroundIllumination;
+
+  /// The type of cliping this widget uses.
+  final Clip clipBehavior;
+
+  /// The content of this box.
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Stack(
+        children: [
+          // Background or Border
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: ShapeDecoration(
+                shape: border,
+                color: backgroundColor,
+              ),
+            ),
+          ),
+
+          // Spotlight
+          Positioned.fill(
+            child: ClipPath(
+              clipper: ShapeBorderClipper(shape: border),
+              clipBehavior: clipBehavior,
+              child: const Window(
+                clipBehavior: Clip.none,
+                delegate: SpotlightDelegate(),
+              ),
+            ),
+          ),
+
+          // // Content + Background
+          ClipPath(
+            clipper: InnerShapeBorderClipper(shape: border),
+            clipBehavior: clipBehavior,
+            child: Container(
+              color: backgroundColor.withOpacity(1 - backgroundIllumination),
+              child: child,
+            ),
+          ),
+        ],
+      );
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty<ShapeBorder>('border', border))
+      ..add(ColorProperty('background', backgroundColor))
+      ..add(DoubleProperty('backgroundIllumination', backgroundIllumination))
+      ..add(DiagnosticsProperty('clipBehavior', clipBehavior));
   }
 }
