@@ -163,7 +163,7 @@ class _SceneMarker extends InheritedWidget {
 }
 
 /// Delegate for [Window] to provide visual representations for [SceneElement]s.
-abstract class WindowDelegate<T extends SceneElement> {
+abstract class WindowDelegate<T extends SceneElement> with Diagnosticable {
   /// Const constructor for subclasses.
   const WindowDelegate();
 
@@ -195,6 +195,10 @@ abstract class WindowDelegate<T extends SceneElement> {
   /// the first time and whenever the [element] notifies its listeners that it
   /// has changed.
   Widget buildRepresentation(BuildContext context, T element);
+
+  /// Returns whether the [SceneElement]s of the [Window] should be rebuild
+  /// after the [oldDelegate] has been replaced with this instance.
+  bool shouldRebuild(WindowDelegate<T> oldDelegate) => true;
 }
 
 /// A window into a [Scene] from a location in the widget tree.
@@ -278,7 +282,8 @@ class _WindowState<T extends SceneElement> extends State<Window<T>> {
   void didUpdateWidget(covariant Window<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.delegate != oldWidget.delegate) {
+    if (widget.delegate != oldWidget.delegate &&
+        widget.delegate.shouldRebuild(oldWidget.delegate)) {
       _elementStates.keys.forEach(_updateElementState);
     }
   }
