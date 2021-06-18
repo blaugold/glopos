@@ -4,8 +4,6 @@ import 'moving_window.dart';
 import 'spotlight_menu.dart';
 import 'window_cards.dart';
 
-final _backgroundColor = Colors.grey.shade900;
-
 class DemoPageLink extends StatelessWidget {
   const DemoPageLink({
     Key? key,
@@ -39,7 +37,6 @@ class HomePage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('glopos Demo'),
         ),
-        backgroundColor: _backgroundColor,
         body: ListView(
           children: [
             DemoPageLink(

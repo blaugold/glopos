@@ -24,48 +24,54 @@ class _WindowCardsPageState extends State<WindowCardsPage> {
           title: const Text('Window Cards'),
         ),
         backgroundColor: Colors.white,
-        body: BindElementToMouse(
-          element: _element,
-          child: Scene(
-            elements: [_element],
-            child: Stack(
-              children: [
-                Positioned.fromRect(
-                  rect: const Offset(50, 50) & const Size(200, 200),
-                  child: WindowCard(
-                    delegate: WindowCardsDelegate(
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-                Positioned.fromRect(
-                  rect: const Offset(300, 50) & const Size(200, 200),
-                  child: WindowCard(
-                    delegate: WindowCardsDelegate(
-                      color: Colors.red,
-                    ),
-                  ),
-                ),
-                Positioned.fromRect(
-                  rect: const Offset(150, 300) & const Size(200, 200),
-                  child: WindowCard(
-                    delegate: WindowCardsDelegate(
-                      color: Colors.green,
-                    ),
-                  ),
-                ),
-                Positioned.fromRect(
-                  rect: const Offset(400, 200) & const Size(200, 400),
-                  child: WindowCard(
-                    delegate: WindowCardsDelegate(
-                      color: Colors.orange,
-                      shape: ContinuousRectangleBorder(
-                        borderRadius: BorderRadius.circular(60),
+        body: Center(
+          child: SizedBox(
+            height: 600,
+            width: 600,
+            child: BindElementToMouse(
+              element: _element,
+              child: Scene(
+                elements: [_element],
+                child: Stack(
+                  children: [
+                    Positioned.fromRect(
+                      rect: const Offset(50, 50) & const Size(200, 200),
+                      child: WindowCard(
+                        delegate: WindowCardsDelegate(
+                          color: Colors.blue,
+                        ),
                       ),
                     ),
-                  ),
+                    Positioned.fromRect(
+                      rect: const Offset(300, 50) & const Size(200, 200),
+                      child: WindowCard(
+                        delegate: WindowCardsDelegate(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                    Positioned.fromRect(
+                      rect: const Offset(150, 300) & const Size(200, 200),
+                      child: WindowCard(
+                        delegate: WindowCardsDelegate(
+                          color: Colors.green,
+                        ),
+                      ),
+                    ),
+                    Positioned.fromRect(
+                      rect: const Offset(400, 200) & const Size(200, 400),
+                      child: WindowCard(
+                        delegate: WindowCardsDelegate(
+                          color: Colors.orange,
+                          shape: ContinuousRectangleBorder(
+                            borderRadius: BorderRadius.circular(60),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
