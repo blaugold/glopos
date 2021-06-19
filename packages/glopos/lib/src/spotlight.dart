@@ -26,7 +26,7 @@ class SpotlightStyle with Diagnosticable {
   static RadialGradient createDefaultGradient(Color color) =>
       RadialGradient(colors: [
         color,
-        color.withOpacity(.25),
+        color.withOpacity(.3),
         color.withOpacity(0),
       ]);
 
