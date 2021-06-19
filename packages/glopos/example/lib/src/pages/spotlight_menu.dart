@@ -51,7 +51,7 @@ class _SpotlightMenuPageState extends State<SpotlightMenuPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              color: Theme.of(context).colorScheme.background,
+              color: Theme.of(context).colorScheme.surface,
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
                   vertical: 10,
@@ -251,7 +251,7 @@ class MenuItem extends StatelessWidget {
       width: 3,
     );
 
-    final shadows = showShadow ? kElevationToShadow[12] : null;
+    final shadows = showShadow ? kElevationToShadow[8] : null;
 
     switch (shape) {
       case _MenuItemShape.circle:

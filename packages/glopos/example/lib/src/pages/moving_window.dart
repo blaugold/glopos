@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:glopos/glopos.dart';
 
+import '../shape.dart';
+
 final _backgroundColor = Colors.grey.shade900;
+const _windowSize = Size(300, 300);
 
 class MovingWindowPage extends StatefulWidget {
   const MovingWindowPage({Key? key}) : super(key: key);
@@ -11,13 +14,31 @@ class MovingWindowPage extends StatefulWidget {
 }
 
 class _MovingWindowPageState extends State<MovingWindowPage> {
-  final _spotlight = Spotlight(position: const Offset(200, 200));
+  final _circle = Shape(
+    color: Colors.green,
+    shape: const CircleBorder(),
+    layoutDelegate: AlignedBoxLayoutDelegate(
+      alignment: Alignment.topLeft,
+      padding: const EdgeInsets.all(20),
+      size: const Size.square(150),
+    ),
+  );
 
-  Offset? _windowPosition;
+  final _square = Shape(
+    color: Colors.orange,
+    shape: ContinuousRectangleBorder(
+      borderRadius: BorderRadius.circular(60),
+    ),
+    layoutDelegate: AlignedBoxLayoutDelegate(
+      size: const Size.square(200),
+    ),
+  );
+
+  final _windowPosition = ValueNotifier<Offset>(Offset.zero);
 
   @override
   void dispose() {
-    _spotlight.dispose();
+    _circle.dispose();
     super.dispose();
   }
 
@@ -27,38 +48,39 @@ class _MovingWindowPageState extends State<MovingWindowPage> {
           title: const Text('Moving Window'),
         ),
         backgroundColor: _backgroundColor,
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-              _spotlight.position = constraints.biggest.center(Offset.zero);
-            });
-
-            _windowPosition ??= constraints.biggest.center(Offset.zero);
-
-            return Scene(
-              elements: [_spotlight],
-              child: Stack(
-                children: [
-                  Positioned.fromRect(
-                    rect: _windowPosition! & const Size(200, 200),
-                    child: GestureDetector(
-                      onPanUpdate: (details) {
-                        setState(() {
-                          _windowPosition = _windowPosition! + details.delta;
-                        });
-                      },
+        body: MouseRegion(
+          onHover: (event) => _windowPosition.value =
+              event.localPosition - _windowSize.center(Offset.zero),
+          child: Scene(
+            elements: [
+              _circle,
+              _square,
+            ],
+            child: Stack(
+              children: [
+                ValueListenableBuilder<Offset>(
+                  valueListenable: _windowPosition,
+                  builder: (context, position, child) => Positioned.fromRect(
+                    rect: position & _windowSize,
+                    child: child!,
+                  ),
+                  child: GestureDetector(
+                    onPanUpdate: (details) {
+                      _windowPosition.value += details.delta;
+                    },
+                    child: AbsorbPointer(
                       child: Container(
                         decoration: BoxDecoration(border: Border.all()),
                         child: const Window(
-                          delegate: SpotlightDelegate(),
+                          delegate: ShapeDelegate(),
                         ),
                       ),
                     ),
-                  )
-                ],
-              ),
-            );
-          },
+                  ),
+                )
+              ],
+            ),
+          ),
         ),
       );
 }

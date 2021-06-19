@@ -36,6 +36,8 @@ class SpotlightStyle with Diagnosticable {
   /// The [Gradient] to color the [Spotlight] with.
   final Gradient? gradient;
 
+  Size get _size => Size.fromRadius(radius!);
+
   /// Makes a copy of this style with the given values replacing existing
   /// values.
   SpotlightStyle copyWith({
@@ -90,6 +92,7 @@ class SpotlightStyle with Diagnosticable {
     if (t == 1.0) {
       return b;
     }
+
     return SpotlightStyle(
       radius: lerpDouble(a.radius, b.radius, t),
       gradient: Gradient.lerp(a.gradient, b.gradient, t),
@@ -111,25 +114,40 @@ class SpotlightStyleTween extends Tween<SpotlightStyle> {
 }
 
 /// A [SceneElement] which represents a spotlight.
-class Spotlight extends SceneElement {
+class Spotlight
+    extends LayoutDelegateSceneElement<PositionedBoxLayoutDelegate> {
   /// Creates a [SceneElement] which represents a spotlight.
   Spotlight({
     bool? enabled,
     Offset? position,
     SpotlightStyle? style,
   })  : _style = style ?? SpotlightStyle.defaultStyle,
-        super(enabled: enabled, position: position);
+        super(
+          enabled: enabled,
+          layoutDelegate: PositionedBoxLayoutDelegate(
+            alignment: Alignment.center,
+            position: position ?? Offset.zero,
+            size: Size.zero,
+          ),
+        ) {
+    _updateSize();
+  }
 
   /// The [SpotlightStyle] of this spotlight.
   SpotlightStyle get style => _style;
   SpotlightStyle _style;
 
-  set style(SpotlightStyle radius) {
-    if (radius != _style) {
-      _style = radius;
+  set style(SpotlightStyle style) {
+    if (_style != style) {
+      if (_style.radius != style.radius) {
+        _updateSize();
+      }
+      _style = style;
       notifyListeners();
     }
   }
+
+  Size _updateSize() => layoutDelegate.size = _style._size;
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -149,20 +167,26 @@ class SpotlightDelegate extends WindowDelegate<Spotlight> {
   final SpotlightStyle? style;
 
   @override
+  AlignmentGeometry sceneElementAnchor(Spotlight element) => Alignment.center;
+
+  @override
+  AlignmentGeometry windowElementAnchor(Spotlight element) => Alignment.center;
+
+  @override
   bool shouldRebuild(covariant SpotlightDelegate oldDelegate) =>
       style != oldDelegate.style;
 
   @override
-  Widget buildRepresentation(BuildContext context, Spotlight element) {
+  Widget build(BuildContext context, Spotlight element) {
     final style = element.style.merge(this.style);
-    final diameter = style.radius! * 2;
 
-    return Container(
-      height: diameter,
-      width: diameter,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: style.gradient,
+    return SizedBox.fromSize(
+      size: style._size,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: style.gradient,
+        ),
       ),
     );
   }

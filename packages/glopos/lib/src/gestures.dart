@@ -13,12 +13,12 @@ class BindElementToMouse extends StatelessWidget {
   /// hover position of the mouse.
   const BindElementToMouse({
     Key? key,
-    required this.element,
+    this.element,
     required this.child,
   }) : super(key: key);
 
   /// The [SceneElement] to bind to the hover position of the mouse.
-  final SceneElement element;
+  final LayoutDelegateSceneElement<PositionLayoutDelegate>? element;
 
   /// The [Widget] which defines the area in which the mouse is tracked.
   ///
@@ -28,9 +28,10 @@ class BindElementToMouse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MouseRegion(
-        onHover: (event) => element.position = event.localPosition,
-        onEnter: (_) => element.enabled = true,
-        onExit: (_) => element.enabled = false,
+        onHover: (event) =>
+            element?.layoutDelegate.position = event.localPosition,
+        onEnter: (_) => element?.enabled = true,
+        onExit: (_) => element?.enabled = false,
         child: child,
       );
 

@@ -35,6 +35,7 @@ class InnerShapeBorderClipper extends CustomClipper<Path> {
       return true;
     }
     final typedOldClipper = oldClipper as InnerShapeBorderClipper;
+
     return typedOldClipper.shape != shape ||
         typedOldClipper.textDirection != textDirection;
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'moving_window.dart';
+import 'scrolling_windows.dart';
 import 'spotlight_menu.dart';
 import 'window_cards.dart';
 
@@ -50,6 +51,10 @@ class HomePage extends StatelessWidget {
             DemoPageLink(
               title: 'Window Cards',
               page: (context) => const WindowCardsPage(),
+            ),
+            DemoPageLink(
+              title: 'Scrolling Windows',
+              page: (context) => const ScrollingWindowPage(),
             ),
           ],
         ),

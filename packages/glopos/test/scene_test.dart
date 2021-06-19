@@ -1,3 +1,6 @@
+// ignore_for_file: lines_longer_than_80_chars, diagnostic_describe_all_properties
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:glopos/glopos.dart';
@@ -8,21 +11,21 @@ void main() {
       expect(TestElement().enabled, isTrue);
     });
 
-    test('is positioned at origin by default', () {
-      expect(TestElement().position, Offset.zero);
-    });
-
     test('exposes debug properties', () {
       expect(
-        TestElement().toString(),
-        stringContainsInOrder([
-          'TestElement#',
-          '(enabled: true, position: Offset(0.0, 0.0))',
+        TestElement().toDiagnosticsNode().getProperties(),
+        containsAll(<dynamic>[
+          isA<DiagnosticsProperty>()
+              .having((it) => it.name, 'name', 'enabled')
+              .having((it) => it.value, 'value', true),
+          isA<DiagnosticsProperty>()
+              .having((it) => it.name, 'name', 'layerLink')
+              .having((it) => it.value, 'value', isA<LayerLink>()),
         ]),
       );
     });
 
-    test('notifies listeners when enabled changes', () {
+    testWidgets('notifies listeners when enabled changes', (_) async {
       TestElement()
         ..addListener(expectAsync0(() {}, count: 0))
         ..enabled = true;
@@ -31,16 +34,253 @@ void main() {
         ..addListener(expectAsync0(() {}, count: 1))
         ..enabled = false;
     });
+  });
 
-    test('notifies position listeners when position changes', () {
-      TestElement()
-        ..addPositionListener(expectAsync0(() {}, count: 0))
-        ..position = Offset.zero;
+  group('PositionLayoutDelegate', () {
+    test('initializes position to Offset.zero', () {
+      expect(TestPositionLayoutDelegate().position, Offset.zero);
+    });
 
-      TestElement()
-        ..addPositionListener(expectAsync0(() {}, count: 1))
+    testWidgets('notifies listeners when position changes', (_) async {
+      final delegate = TestPositionLayoutDelegate();
+
+      delegate.addListener(expectAsync0(() {
+        expect(delegate.position, Offset.infinite);
+      }));
+
+      // ignore: cascade_invocations
+      delegate
+        ..position = Offset.zero
         ..position = Offset.infinite;
     });
+
+    test('adds position to debug properties', () {
+      expect(
+        TestPositionLayoutDelegate().toDiagnosticsNode().getProperties(),
+        contains(
+          isA<DiagnosticsProperty>()
+              .having((it) => it.name, 'name', 'position')
+              .having((it) => it.value, 'value', Offset.zero),
+        ),
+      );
+    });
+  });
+
+  group('SizeLayoutDelegate', () {
+    test('initializes size to Size.zero', () {
+      expect(TestSizeLayoutDelegate().size, Size.zero);
+    });
+
+    testWidgets('notifies listeners when size changes', (_) async {
+      final delegate = TestSizeLayoutDelegate();
+
+      delegate.addListener(expectAsync0(() {
+        expect(delegate.size, Size.infinite);
+      }));
+
+      // ignore: cascade_invocations
+      delegate
+        ..size = Size.zero
+        ..size = Size.infinite;
+    });
+
+    test('adds size to debug properties', () {
+      expect(
+        TestSizeLayoutDelegate().toDiagnosticsNode().getProperties(),
+        contains(
+          isA<DiagnosticsProperty>()
+              .having((it) => it.name, 'name', 'size')
+              .having((it) => it.value, 'value', Size.zero),
+        ),
+      );
+    });
+  });
+
+  group('PositionedBoxLayoutDelegate', () {
+    test('initializes alignment to Alignment.topLeft', () {
+      expect(
+        PositionedBoxLayoutDelegate(size: Size.zero).alignment,
+        Alignment.topLeft,
+      );
+    });
+
+    testWidgets('notifies listeners when alignment changes', (_) async {
+      final delegate = PositionedBoxLayoutDelegate(size: Size.zero);
+
+      delegate.addListener(expectAsync0(() {
+        expect(delegate.alignment, Alignment.center);
+      }));
+
+      // ignore: cascade_invocations
+      delegate
+        ..alignment = Alignment.topLeft
+        ..alignment = Alignment.center;
+    });
+
+    test('adds alignment to debug properties', () {
+      expect(
+        PositionedBoxLayoutDelegate(size: Size.zero)
+            .toDiagnosticsNode()
+            .getProperties(),
+        contains(
+          isA<DiagnosticsProperty>()
+              .having((it) => it.name, 'name', 'alignment')
+              .having((it) => it.value, 'value', Alignment.topLeft),
+        ),
+      );
+    });
+
+    testWidgets('correctly lays out SceneElement', (tester) async {
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Scene(
+          elements: [
+            LayoutTestElement(
+              color: Colors.red,
+              layoutDelegate: PositionedBoxLayoutDelegate(
+                size: const Size.square(100),
+              ),
+            ),
+            LayoutTestElement(
+              color: Colors.green,
+              layoutDelegate: PositionedBoxLayoutDelegate(
+                position: const Offset(200, 100),
+                alignment: Alignment.center,
+                size: const Size.square(200),
+              ),
+            ),
+          ],
+          child: Window(
+            delegate: LayoutTestWindowDelegate(),
+          ),
+        ),
+      ));
+
+      await expectLater(
+        find.byType(Scene),
+        matchesGoldenFile('goldens/PositionedBoxLayoutDelegate_layout.png'),
+      );
+    });
+  });
+
+  group('AlignedBoxLayoutDelegate', () {
+    test('initializes alignment to Alignment.topLeft', () {
+      expect(
+        AlignedBoxLayoutDelegate(size: Size.zero).alignment,
+        Alignment.center,
+      );
+    });
+
+    testWidgets('notifies listeners when alignment changes', (_) async {
+      final delegate = AlignedBoxLayoutDelegate(size: Size.zero);
+
+      delegate.addListener(expectAsync0(() {
+        expect(delegate.alignment, Alignment.topLeft);
+      }));
+
+      // ignore: cascade_invocations
+      delegate
+        ..alignment = Alignment.center
+        ..alignment = Alignment.topLeft;
+    });
+
+    testWidgets('notifies listeners when padding changes', (_) async {
+      final delegate = AlignedBoxLayoutDelegate(size: Size.zero);
+
+      delegate.addListener(expectAsync0(() {
+        expect(delegate.padding, const EdgeInsets.all(10));
+      }));
+
+      // ignore: cascade_invocations
+      delegate
+        ..padding = EdgeInsets.zero
+        ..padding = const EdgeInsets.all(10);
+    });
+
+    test('adds alignment to debug properties', () {
+      expect(
+        AlignedBoxLayoutDelegate(size: Size.zero)
+            .toDiagnosticsNode()
+            .getProperties(),
+        containsAll(<dynamic>[
+          isA<DiagnosticsProperty>()
+              .having((it) => it.name, 'name', 'alignment')
+              .having((it) => it.value, 'value', Alignment.center),
+          isA<DiagnosticsProperty>()
+              .having((it) => it.name, 'name', 'padding')
+              .having((it) => it.value, 'value', EdgeInsets.zero),
+        ]),
+      );
+    });
+
+    testWidgets('correctly lays out SceneElement', (tester) async {
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Scene(
+          elements: [
+            LayoutTestElement(
+              color: Colors.red,
+              layoutDelegate: AlignedBoxLayoutDelegate(
+                size: const Size.square(100),
+              ),
+            ),
+            LayoutTestElement(
+              color: Colors.green,
+              layoutDelegate: AlignedBoxLayoutDelegate(
+                alignment: Alignment.topLeft,
+                size: const Size.square(200),
+                padding: const EdgeInsets.all(20),
+              ),
+            ),
+          ],
+          child: Window(
+            delegate: LayoutTestWindowDelegate(),
+          ),
+        ),
+      ));
+
+      await expectLater(
+        find.byType(Scene),
+        matchesGoldenFile('goldens/AlignedBoxLayoutDelegate_layout.png'),
+      );
+    });
+  });
+
+  group('LayoutDelegateSceneElement', () {
+    test('adds layoutDelegate to debug properties', () {
+      expect(
+        LayoutTestElement(
+          layoutDelegate: AlignedBoxLayoutDelegate(size: Size.zero),
+          color: Colors.black,
+        ).toDiagnosticsNode().getProperties(),
+        containsAll(<dynamic>[
+          isA<DiagnosticsProperty>()
+              .having((it) => it.name, 'name', 'layoutDelegate')
+              .having(
+                (it) => it.value,
+                'value',
+                isA<AlignedBoxLayoutDelegate>(),
+              ),
+        ]),
+      );
+    });
+
+    testWidgets(
+      'notifies listeners when layout delegate changes',
+      (_) async {
+        final element = LayoutTestElement(
+          layoutDelegate: AlignedBoxLayoutDelegate(size: Size.zero),
+          color: Colors.black,
+        );
+        final newLayoutDelegate = AlignedBoxLayoutDelegate(size: Size.zero);
+
+        element.layoutDelegateChanges.addListener(expectAsync0(() {
+          expect(element.layoutDelegate, newLayoutDelegate);
+        }));
+
+        element.layoutDelegate = newLayoutDelegate;
+      },
+    );
   });
 
   group('Scene', () {
@@ -54,7 +294,8 @@ void main() {
         scene.toString(),
         stringContainsInOrder([
           'Scene(elements: [TestElement#',
-          '(enabled: true, position: Offset(0.0, 0.0))])',
+          '(layerLink: LayerLink#',
+          '(<dangling>), enabled: true)])',
         ]),
       );
     });
@@ -112,7 +353,7 @@ void main() {
         expect(receivedElements, [
           <SceneElement>[],
           [element],
-          <SceneElement>[]
+          <SceneElement>[],
         ]);
       },
     );
@@ -120,3 +361,42 @@ void main() {
 }
 
 class TestElement extends SceneElement {}
+
+class TestPositionLayoutDelegate extends SceneElementLayoutDelegate
+    with PositionLayoutDelegate {
+  @override
+  Widget buildPositioned(BuildContext context, Widget content) =>
+      throw UnimplementedError();
+}
+
+class TestSizeLayoutDelegate extends SceneElementLayoutDelegate
+    with SizeLayoutDelegate {
+  @override
+  Widget buildPositioned(BuildContext context, Widget content) =>
+      throw UnimplementedError();
+}
+
+class LayoutTestElement<T extends SizeLayoutDelegate>
+    extends LayoutDelegateSceneElement<T> {
+  LayoutTestElement({required T layoutDelegate, required this.color})
+      : super(layoutDelegate: layoutDelegate);
+
+  final Color color;
+}
+
+class LayoutTestWindowDelegate extends WindowDelegate<LayoutTestElement> {
+  @override
+  Widget build(
+    BuildContext context,
+    LayoutTestElement element,
+  ) =>
+      LayoutDelegateBuilder<SizeLayoutDelegate>(
+        element: element,
+        builder: (context, value, child) => SizedBox.fromSize(
+          size: value.size,
+          child: Container(
+            color: element.color,
+          ),
+        ),
+      );
+}
