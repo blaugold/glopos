@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:glopos/glopos.dart';
 
 import '../shape.dart';
+import 'example_scaffold.dart';
 
 class WindowCardsPage extends StatefulWidget {
   const WindowCardsPage({Key? key}) : super(key: key);
@@ -29,10 +30,8 @@ class _WindowCardsPageState extends State<WindowCardsPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Window Cards'),
-        ),
+  Widget build(BuildContext context) => ExampleScaffold(
+        title: 'Window Cards',
         body: BindElementToMouse(
           element: _shape,
           child: Scene(
