@@ -1,5 +1,6 @@
 name: glopos
-description: ''
+description: View elements in a global scene through local windows.
+  Create effects which visually connect separate UI elements.
 version: 0.0.0
 homepage: https://github.com/blaugold/glopos/tree/main/packages/glopos
 repository: https://github.com/blaugold/glopos
@@ -17,5 +18,3 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-flutter:
