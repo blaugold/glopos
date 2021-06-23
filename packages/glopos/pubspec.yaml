@@ -1,7 +1,7 @@
 name: glopos
 description: View elements in a global scene through local windows.
   Create effects which visually connect separate UI elements.
-version: 0.0.0
+version: 0.1.0
 homepage: https://github.com/blaugold/glopos/tree/main/packages/glopos
 repository: https://github.com/blaugold/glopos
 issue_tracker: https://github.com/blaugold/glopos/issues
