@@ -72,7 +72,7 @@ class _ScrollingWindowPageState extends State<ScrollingWindowPage> {
             scrollDirection: _scrollDirection,
             itemBuilder: (context, index) {
               final color = _colors[index % _colors.length];
-              final child = _ScrollingWindow(
+              Widget child = _ScrollingWindow(
                 index: index,
                 color: color,
               );
@@ -80,22 +80,26 @@ class _ScrollingWindowPageState extends State<ScrollingWindowPage> {
               // [_ScrollingWindow]s are positioned depending on their index to
               // create visual movement when scrolling through them.
               final alignment = sin(index * (360 / 60));
-              return Align(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 1000),
-                  child: Container(
-                    padding: _scrollDirection == Axis.vertical
-                        ? const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 10)
-                        : const EdgeInsets.symmetric(
-                            vertical: 20, horizontal: 10),
-                    alignment: _scrollDirection == Axis.vertical
-                        ? Alignment(alignment, 0)
-                        : Alignment(0, alignment),
+              child = Container(
+                padding: _scrollDirection == Axis.vertical
+                    ? const EdgeInsets.symmetric(vertical: 10, horizontal: 10)
+                    : const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                alignment: _scrollDirection == Axis.vertical
+                    ? Alignment(alignment, 0)
+                    : Alignment(0, alignment),
+                child: child,
+              );
+
+              if (_scrollDirection == Axis.vertical) {
+                child = Align(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 1000),
                     child: child,
                   ),
-                ),
-              );
+                );
+              }
+
+              return child;
             },
           ),
         ),
