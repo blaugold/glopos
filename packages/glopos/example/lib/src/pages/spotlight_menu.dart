@@ -31,9 +31,9 @@ class SpotlightMenuPage extends StatefulWidget {
 class _SpotlightMenuPageState extends State<SpotlightMenuPage> {
   final _spotlight = Spotlight();
 
-  _MenuItemShape _shape = _MenuItemShape.circle;
+  _MenuItemShape _shape = _MenuItemShape.rectangle;
   bool _showBorders = false;
-  bool _showShadows = false;
+  bool _showShadows = true;
 
   @override
   void dispose() {
