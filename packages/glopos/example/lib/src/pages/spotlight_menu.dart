@@ -1,3 +1,7 @@
+/// This examples show how the [Spotlight] element and associated classes
+/// can be used to create a spotlight effect for a menu UI.
+library spotlight_menu;
+
 import 'package:flutter/material.dart';
 import 'package:glopos/glopos.dart';
 
@@ -109,59 +113,59 @@ class _SpotlightMenuPageState extends State<SpotlightMenuPage> {
                   mainAxisSpacing: 18,
                   clipBehavior: Clip.none,
                   children: [
-                    MenuItem(
+                    _MenuItem(
                       title: const Text('Language'),
                       spotlightStyle: _spotlightStyleRed,
                       shape: _shape,
                       showBorder: _showBorders,
                       showShadow: _showShadows,
                     ),
-                    MenuItem(
+                    _MenuItem(
                       title: const Text('Devices'),
                       shape: _shape,
                       showBorder: _showBorders,
                       showShadow: _showShadows,
                     ),
-                    MenuItem(
+                    _MenuItem(
                       title: const Text('System'),
                       spotlightStyle: _spotlightStyleBlue,
                       shape: _shape,
                       showBorder: _showBorders,
                       showShadow: _showShadows,
                     ),
-                    MenuItem(
+                    _MenuItem(
                       title: const Text('Security'),
                       shape: _shape,
                       showBorder: _showBorders,
                       showShadow: _showShadows,
                     ),
-                    MenuItem(
+                    _MenuItem(
                       title: const Text('Printers'),
                       spotlightStyle: _spotlightStyleGreen,
                       shape: _shape,
                       showBorder: _showBorders,
                       showShadow: _showShadows,
                     ),
-                    MenuItem(
+                    _MenuItem(
                       title: const Text('Network'),
                       shape: _shape,
                       showBorder: _showBorders,
                       showShadow: _showShadows,
                     ),
-                    MenuItem(
+                    _MenuItem(
                       title: const Text('Storage'),
                       spotlightStyle: _spotlightStyleOrange,
                       shape: _shape,
                       showBorder: _showBorders,
                       showShadow: _showShadows,
                     ),
-                    MenuItem(
+                    _MenuItem(
                       title: const Text('Energy'),
                       shape: _shape,
                       showBorder: _showBorders,
                       showShadow: _showShadows,
                     ),
-                    MenuItem(
+                    _MenuItem(
                       title: const Text('Updates'),
                       spotlightStyle: _spotlightStylePink,
                       shape: _shape,
@@ -184,8 +188,8 @@ enum _MenuItemShape {
   continuosRoundedRectangle
 }
 
-class MenuItem extends StatelessWidget {
-  const MenuItem({
+class _MenuItem extends StatelessWidget {
+  const _MenuItem({
     Key? key,
     required this.title,
     required this.shape,

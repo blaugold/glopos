@@ -50,6 +50,7 @@ class _MovingWindowPageState extends State<MovingWindowPage> {
   @override
   void dispose() {
     _circle.dispose();
+    _square.dispose();
     super.dispose();
   }
 

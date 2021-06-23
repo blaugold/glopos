@@ -1,3 +1,7 @@
+/// This examples demonstrates how to align a [SceneElement] within the [Scene]
+/// and that [Window]s work within the context of scrolling.
+library scrolling_windows;
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -32,7 +36,6 @@ class _ScrollingWindowPageState extends State<ScrollingWindowPage> {
     layoutDelegate: AlignedBoxLayoutDelegate(
       size: const Size.square(600),
     ),
-    color: Colors.black,
     shape: const CircleBorder(),
     shadow: false,
   );
@@ -77,14 +80,21 @@ class _ScrollingWindowPageState extends State<ScrollingWindowPage> {
               // [_ScrollingWindow]s are positioned depending on their index to
               // create visual movement when scrolling through them.
               final alignment = sin(index * (360 / 60));
-              return Container(
-                padding: _scrollDirection == Axis.vertical
-                    ? const EdgeInsets.symmetric(vertical: 10, horizontal: 10)
-                    : const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                alignment: _scrollDirection == Axis.vertical
-                    ? Alignment(alignment, 0)
-                    : Alignment(0, alignment),
-                child: child,
+              return Align(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1000),
+                  child: Container(
+                    padding: _scrollDirection == Axis.vertical
+                        ? const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 10)
+                        : const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 10),
+                    alignment: _scrollDirection == Axis.vertical
+                        ? Alignment(alignment, 0)
+                        : Alignment(0, alignment),
+                    child: child,
+                  ),
+                ),
               );
             },
           ),

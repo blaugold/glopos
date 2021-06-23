@@ -1,3 +1,7 @@
+/// This example demonstrates that [SceneElement]s can have a different
+/// appearance in each [Window] through which they are viewed.
+library window_cards;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:glopos/glopos.dart';
@@ -14,8 +18,6 @@ class WindowCardsPage extends StatefulWidget {
 
 class _WindowCardsPageState extends State<WindowCardsPage> {
   final _shape = Shape(
-    // This color does not matter, since every window uses a different color.
-    color: Colors.black,
     shape: const CircleBorder(),
     layoutDelegate: PositionedBoxLayoutDelegate(
       alignment: Alignment.center,
@@ -41,7 +43,7 @@ class _WindowCardsPageState extends State<WindowCardsPage> {
               clipBehavior: Clip.none,
               children: [
                 Positioned.fill(
-                  child: WindowCard(
+                  child: _WindowCard(
                     delegate: ShapeDelegate(
                       color: Theme.of(context).brightness == Brightness.light
                           ? Colors.grey.shade100
@@ -59,7 +61,7 @@ class _WindowCardsPageState extends State<WindowCardsPage> {
                       children: [
                         Positioned.fromRect(
                           rect: const Offset(50, 50) & const Size(200, 200),
-                          child: const WindowCard(
+                          child: const _WindowCard(
                             delegate: ShapeDelegate(
                               color: Colors.blue,
                             ),
@@ -67,7 +69,7 @@ class _WindowCardsPageState extends State<WindowCardsPage> {
                         ),
                         Positioned.fromRect(
                           rect: const Offset(300, 50) & const Size(200, 200),
-                          child: const WindowCard(
+                          child: const _WindowCard(
                             delegate: ShapeDelegate(
                               color: Colors.red,
                             ),
@@ -75,7 +77,7 @@ class _WindowCardsPageState extends State<WindowCardsPage> {
                         ),
                         Positioned.fromRect(
                           rect: const Offset(150, 300) & const Size(200, 200),
-                          child: const WindowCard(
+                          child: const _WindowCard(
                             delegate: ShapeDelegate(
                               color: Colors.green,
                             ),
@@ -83,7 +85,7 @@ class _WindowCardsPageState extends State<WindowCardsPage> {
                         ),
                         Positioned.fromRect(
                           rect: const Offset(400, 200) & const Size(200, 400),
-                          child: WindowCard(
+                          child: _WindowCard(
                             delegate: ShapeDelegate(
                               color: Colors.orange,
                               shape: ContinuousRectangleBorder(
@@ -103,8 +105,8 @@ class _WindowCardsPageState extends State<WindowCardsPage> {
       );
 }
 
-class WindowCard extends StatelessWidget {
-  const WindowCard({
+class _WindowCard extends StatelessWidget {
+  const _WindowCard({
     Key? key,
     required this.delegate,
   }) : super(key: key);

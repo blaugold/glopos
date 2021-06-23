@@ -5,7 +5,7 @@ class Shape<T extends SizeLayoutDelegate>
     extends LayoutDelegateSceneElement<T> {
   Shape({
     required T layoutDelegate,
-    required this.color,
+    this.color = Colors.black,
     required this.shape,
     this.shadow = true,
   }) : super(layoutDelegate: layoutDelegate);
