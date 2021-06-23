@@ -45,6 +45,7 @@ class _SpotlightMenuPageState extends State<SpotlightMenuPage> {
 
   @override
   Widget build(BuildContext context) => ExampleScaffold(
+        id: 'spotlight_menu',
         title: 'Spotlight Menu',
         backgroundColor: _backgroundColor,
         parameters: [

@@ -45,6 +45,7 @@ class _ScrollingWindowPageState extends State<ScrollingWindowPage> {
 
   @override
   Widget build(BuildContext context) => ExampleScaffold(
+        id: 'scrolling_windows',
         title: 'Scrolling Windows',
         parameters: [
           DropdownButton<Axis>(

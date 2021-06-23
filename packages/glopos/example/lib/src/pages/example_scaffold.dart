@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ExampleScaffold extends StatelessWidget {
   const ExampleScaffold({
     Key? key,
+    required this.id,
     required this.title,
     this.parameters,
     this.backgroundColor,
     required this.body,
   }) : super(key: key);
+
+  final String id;
 
   final String title;
 
@@ -21,6 +25,12 @@ class ExampleScaffold extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: Text(title),
+          actions: [
+            IconButton(
+              onPressed: _openSourceCode,
+              icon: const Icon(Icons.code),
+            ),
+          ],
         ),
         backgroundColor: backgroundColor,
         body: Column(
@@ -34,6 +44,14 @@ class ExampleScaffold extends StatelessWidget {
           ],
         ),
       );
+
+  void _openSourceCode() {
+    const repoUrl = 'https://github.com/blaugold/glopos';
+    const examplePagesUrl =
+        '$repoUrl/blob/main/packages/glopos/example/lib/src/pages';
+    final url = '$examplePagesUrl/$id.dart';
+    launch(url);
+  }
 }
 
 class _ParametersBar extends StatelessWidget {

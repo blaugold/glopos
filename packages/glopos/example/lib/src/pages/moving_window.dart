@@ -55,6 +55,7 @@ class _MovingWindowPageState extends State<MovingWindowPage> {
 
   @override
   Widget build(BuildContext context) => ExampleScaffold(
+        id: 'moving_window',
         title: 'Moving Window',
         backgroundColor: _backgroundColor,
         body: MouseRegion(

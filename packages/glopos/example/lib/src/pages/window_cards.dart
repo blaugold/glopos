@@ -31,6 +31,7 @@ class _WindowCardsPageState extends State<WindowCardsPage> {
 
   @override
   Widget build(BuildContext context) => ExampleScaffold(
+        id: 'window_cards',
         title: 'Window Cards',
         body: BindElementToMouse(
           element: _shape,
