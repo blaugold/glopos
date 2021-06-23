@@ -7,3 +7,11 @@
 </p>
 
 # glopos
+
+## Live Demo
+
+The [example app] has been built for web and can be [opened in any browser][example app live demo].
+
+
+[example app]: https://github.com/blaugold/glopos/tree/main/packages/glopos/example
+[example app live demo]: https://blaugold.github.io/glopos/glopos_example/index.html
