@@ -19,13 +19,17 @@ A `Window` is `Widget` which can be positioned anywhere in the subtree of a `Sce
 
 ## Prebuilt effects
 
-The library also contains effects built on top of the core components:
+The library also contains effects built on top of the core components.
 
-- `Spotlight`: Illuminate parts of the UI through a globally positioned spotlight.
+### `Spotlight`
+
+Illuminate parts of the UI through a globally positioned spotlight.
+
+<img alt="Spotlight Demo" src="https://raw.githubusercontent.com/blaugold/glopos/main/docs/assets/glopos-spotlight-demo.gif" width="500">
 
 ## Getting Started
 
-Get started by playing with the examples and by taking a look at their source code (examples contain links). The [example app] has been built for the web and can be [opened in any browser][example app live demo]. 
+Get started by playing with the examples and by taking a look at their source code (examples contain links). The [example app] has been built for the web and can be [opened in any browser][example app live demo].
 
 [glopos_pub]: https://pub.dev/packages/glopos
 [license]: https://github.com/blaugold/glopos/blob/main/packages/glopos/LICENSE
