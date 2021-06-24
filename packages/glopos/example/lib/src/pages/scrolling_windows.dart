@@ -1,4 +1,4 @@
-/// This examples demonstrates how to align a [SceneElement] within the [Scene]
+/// This example demonstrates how to align a [SceneElement] within the [Scene]
 /// and that [Window]s work within the context of scrolling.
 library scrolling_windows;
 

@@ -1,4 +1,4 @@
-/// This examples show how the [Spotlight] element and associated classes
+/// This example shows how the [Spotlight] element and associated classes
 /// can be used to create a spotlight effect for a menu UI.
 library spotlight_menu;
 

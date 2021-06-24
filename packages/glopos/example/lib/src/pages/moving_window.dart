@@ -1,4 +1,4 @@
-/// This examples demonstrates moving a [Window] over a static [Scene],
+/// This example demonstrates moving a [Window] over a static [Scene],
 /// revealing different [SceneElement]s depending on it's position.
 library moving_window;
 
