@@ -1,3 +1,9 @@
+## 0.1.1
+
+ - **TEST**: consistently name goldens.
+ - **FEAT**: add `WindowDelegate.useElementSize`.
+ - **FEAT**: add `LayedOutSceneElement`.
+
 ## 0.1.0+1
 
  - **DOCS**: add demo gif for `Spotlight`.
