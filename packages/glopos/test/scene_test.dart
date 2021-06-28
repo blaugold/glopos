@@ -151,7 +151,7 @@ void main() {
             ),
           ],
           child: Window(
-            delegate: LayoutTestWindowDelegate(),
+            delegate: LayoutTestDelegate(),
           ),
         ),
       ));
@@ -234,7 +234,7 @@ void main() {
             ),
           ],
           child: Window(
-            delegate: LayoutTestWindowDelegate(),
+            delegate: LayoutTestDelegate(),
           ),
         ),
       ));
@@ -281,6 +281,111 @@ void main() {
         element.layoutDelegate = newLayoutDelegate;
       },
     );
+  });
+
+  group('LayedOutSceneElement', () {
+    test('exposes debug properties', () {
+      expect(
+        LayedOutTestElement().toDiagnosticsNode().getProperties(),
+        containsAll(<dynamic>[
+          isA<DiagnosticsProperty>()
+              .having((it) => it.name, 'name', 'size')
+              .having((it) => it.value, 'value', const Size.square(100)),
+        ]),
+      );
+    });
+
+    testWidgets(
+      'notifies listeners when size changes',
+      (tester) async {
+        final element = LayedOutTestElement();
+
+        element.addListener(expectAsync0(() {
+          expect(element.size, Size.zero);
+        }));
+
+        expect(element.size, const Size.square(100));
+
+        element.size = Size.zero;
+      },
+    );
+
+    testWidgets('correctly lays out SceneElement', (tester) async {
+      final elementA = LayedOutTestElement(
+        color: Colors.red,
+      );
+      final elementB = LayedOutTestElement(
+        color: Colors.green,
+        size: const Size.square(200),
+      );
+
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Scene(
+          elements: [elementA, elementB],
+          layout: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              children: [
+                LayoutSceneElement(element: elementA),
+                LayoutSceneElement(element: elementB),
+              ],
+            ),
+          ),
+          child: Window(
+            delegate: LayedOutTestDelegate(),
+          ),
+        ),
+      ));
+
+      await expectLater(
+        find.byType(Scene),
+        matchesGoldenFile('goldens/LayedOutSceneElement_layout.png'),
+      );
+    });
+
+    testWidgets('update layout of SceneElement', (tester) async {
+      final element = LayedOutTestElement(
+        color: Colors.red,
+      );
+      final padding = ValueNotifier(EdgeInsets.zero);
+
+      await tester.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: Scene(
+          elements: [element],
+          layout: ValueListenableBuilder<EdgeInsets>(
+            valueListenable: padding,
+            builder: (context, padding, child) => Padding(
+              padding: padding,
+              child: child,
+            ),
+            child: Row(
+              children: [
+                LayoutSceneElement(element: element),
+              ],
+            ),
+          ),
+          child: Window(
+            delegate: LayedOutTestDelegate(),
+          ),
+        ),
+      ));
+
+      await expectLater(
+        find.byType(Scene),
+        matchesGoldenFile('goldens/LayedOutSceneElement_update_layout_0.png'),
+      );
+
+      element.size = const Size.square(200);
+      padding.value = const EdgeInsets.all(10);
+      await tester.pump();
+
+      await expectLater(
+        find.byType(Scene),
+        matchesGoldenFile('goldens/LayedOutSceneElement_update_layout_1.png'),
+      );
+    });
   });
 
   group('Scene', () {
@@ -384,7 +489,7 @@ class LayoutTestElement<T extends SizeLayoutDelegate>
   final Color color;
 }
 
-class LayoutTestWindowDelegate extends WindowDelegate<LayoutTestElement> {
+class LayoutTestDelegate extends WindowDelegate<LayoutTestElement> {
   @override
   Widget build(
     BuildContext context,
@@ -399,4 +504,19 @@ class LayoutTestWindowDelegate extends WindowDelegate<LayoutTestElement> {
           ),
         ),
       );
+}
+
+class LayedOutTestElement extends LayedOutSceneElement {
+  LayedOutTestElement({
+    Size size = const Size.square(100),
+    this.color = Colors.white,
+  }) : super(size: size);
+
+  final Color color;
+}
+
+class LayedOutTestDelegate extends WindowDelegate<LayedOutTestElement> {
+  @override
+  Widget build(BuildContext context, LayedOutTestElement element) =>
+      Container(color: element.color);
 }

@@ -23,24 +23,18 @@ class MovingWindowPage extends StatefulWidget {
 
 class _MovingWindowPageState extends State<MovingWindowPage> {
   /// Green circle which is fixed at the top-left corner of the page.
-  final _circle = Shape(
+  final _circle = LayedOutShape(
+    size: const Size.square(150),
     color: Colors.green,
     shape: const CircleBorder(),
-    layoutDelegate: AlignedBoxLayoutDelegate(
-      alignment: Alignment.topLeft,
-      padding: const EdgeInsets.all(20),
-      size: const Size.square(150),
-    ),
   );
 
   /// Orange square which is centerd in the page.
-  final _square = Shape(
+  final _square = LayedOutShape(
+    size: const Size.square(200),
     color: Colors.orange,
     shape: ContinuousRectangleBorder(
       borderRadius: BorderRadius.circular(60),
-    ),
-    layoutDelegate: AlignedBoxLayoutDelegate(
-      size: const Size.square(200),
     ),
   );
 
@@ -66,6 +60,20 @@ class _MovingWindowPageState extends State<MovingWindowPage> {
               event.localPosition - _windowSize.center(Offset.zero),
           child: Scene(
             elements: [_circle, _square],
+            layout: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: LayoutSceneElement(element: _circle),
+                  ),
+                  Center(
+                    child: LayoutSceneElement(element: _square),
+                  ),
+                ],
+              ),
+            ),
             // The [Stack] is used to position the [_MovingWindow] within the
             // page.
             child: Stack(
@@ -104,7 +112,7 @@ class _MovingWindow extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(border: Border.all()),
             child: const Window(
-              delegate: ShapeDelegate(),
+              delegate: LayedOutShapeDelegate(),
             ),
           ),
         ),

@@ -61,3 +61,49 @@ class ShapeDelegate extends WindowDelegate<Shape> {
         ),
       );
 }
+
+class LayedOutShape extends LayedOutSceneElement {
+  LayedOutShape({
+    required Size size,
+    this.color = Colors.black,
+    required this.shape,
+    this.shadow = true,
+  }): super(size: size);
+
+  final Color color;
+
+  final ShapeBorder shape;
+
+  final bool shadow;
+}
+
+class LayedOutShapeDelegate extends WindowDelegate<LayedOutShape> {
+  const LayedOutShapeDelegate({
+    this.color,
+    this.shape,
+    this.shadow,
+  });
+
+  final Color? color;
+
+  final ShapeBorder? shape;
+
+  final bool? shadow;
+
+  @override
+  bool shouldRebuild(covariant LayedOutShapeDelegate oldDelegate) =>
+      color != oldDelegate.color ||
+      shape != oldDelegate.shape ||
+      shadow != oldDelegate.shadow;
+
+  @override
+  Widget build(
+    BuildContext context,
+    LayedOutShape element,
+  ) =>
+      Material(
+        shape: shape ?? element.shape,
+        color: color ?? element.color,
+        elevation: shadow ?? element.shadow ? 8 : 0,
+      );
+}
