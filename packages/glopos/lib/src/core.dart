@@ -423,7 +423,7 @@ class LayoutSceneElement extends StatelessWidget {
   /// tree.
   final LayedOutSceneElement element;
 
-  /// Optional child [Widget] to place at the [element]'s position with the 
+  /// Optional child [Widget] to place at the [element]'s position with the
   /// [element]'s size.
   final Widget? child;
 
@@ -480,7 +480,7 @@ class Scene extends StatelessWidget {
   /// [LayedOutSceneElement] in [elements].
   final Widget? layout;
 
-  /// The [Widget] tree which contains the [Window]s which display this 
+  /// The [Widget] tree which contains the [Window]s which display this
   /// [Scene]'s [elements].
   ///
   /// {@macro flutter.widgets.ProxyWidget.child}
@@ -646,6 +646,16 @@ abstract class WindowDelegate<T extends SceneElement> with Diagnosticable {
   /// with a greater paint order. [SceneElement]s with the same paint order
   /// are painted in the order in which they appear in [Scene.elements].
   int paintOrder(T element) => 0;
+
+  /// Whether the [Widget] returned from [build] should be forced to have the
+  /// same size as [element].
+  ///
+  /// This only applies to [SceneElement]s which have a [Size]
+  /// ([LayedOutSceneElement]s and [LayoutDelegateSceneElement]s with a
+  /// [SizeLayoutDelegate]).
+  ///
+  /// The default implementation always returns `true`.
+  bool useElementSize(T element) => true;
 
   /// Returns a [Widget] which gives [element] a visual representation in the
   /// [Window].
@@ -962,22 +972,39 @@ class _WindowState<T extends SceneElement> extends State<Window<T>>
 
     // This builder ensures widget is rebuilt during hot reload.
     Widget child = Builder(
+      key: ValueKey(element),
       builder: (context) => widget.delegate.build(context, element),
     );
 
-    if (element is LayedOutSceneElement) {
-      child = ValueListenableBuilder<Size>(
-        valueListenable: element._size,
-        builder: (context, size, child) => ConstrainedBox(
-          constraints: BoxConstraints.tight(size),
+    if (widget.delegate.useElementSize(element)) {
+      if (element is LayedOutSceneElement) {
+        child = ValueListenableBuilder<Size>(
+          valueListenable: element._size,
+          builder: (context, size, child) => ConstrainedBox(
+            constraints: BoxConstraints.tight(size),
+            child: child,
+          ),
           child: child,
-        ),
-        child: child,
-      );
+        );
+      } else if (element is LayoutDelegateSceneElement) {
+        child = LayoutDelegateBuilder(
+          element: element,
+          builder: (context, delegate, child) {
+            final constraints = delegate is SizeLayoutDelegate
+                ? BoxConstraints.tight(delegate.size)
+                : const BoxConstraints();
+
+            return ConstrainedBox(
+              constraints: constraints,
+              child: child,
+            );
+          },
+          child: child,
+        );
+      }
     }
 
     state.widget = OverflowBox(
-      key: ValueKey(element),
       minHeight: 0,
       minWidth: 0,
       maxHeight: double.infinity,

@@ -42,6 +42,13 @@ void main() {
       expect(delegate.paintOrder(element), 0);
     });
 
+    test('default implementation of useElementSize returns true', () {
+      final element = TestElement();
+      final delegate = DefaultDelegate();
+
+      expect(delegate.useElementSize(element), true);
+    });
+
     test('default implementation of shouldRebuild returns true', () {
       final delegate = DefaultDelegate();
       expect(delegate.shouldRebuild(delegate), true);
