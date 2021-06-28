@@ -434,7 +434,7 @@ void main() {
 
         await expectLater(
           find.byType(Scene),
-          matchesGoldenFile('goldens/stack_in_scene_order.png'),
+          matchesGoldenFile('goldens/Window/stack_in_scene_order.png'),
         );
       },
     );
@@ -464,7 +464,7 @@ void main() {
 
         await expectLater(
           find.byType(Scene),
-          matchesGoldenFile('goldens/stack_in_paint_order.png'),
+          matchesGoldenFile('goldens/Window/stack_in_paint_order.png'),
         );
       },
     );
@@ -510,7 +510,7 @@ void main() {
 
         await expectLater(
           find.byKey(const Key('root')),
-          matchesGoldenFile('goldens/position_elements.png'),
+          matchesGoldenFile('goldens/Window/position_elements.png'),
         );
       },
     );
@@ -563,7 +563,7 @@ void main() {
 
         await expectLater(
           find.byType(Scene),
-          matchesGoldenFile('goldens/align_elements.png'),
+          matchesGoldenFile('goldens/Window/align_elements.png'),
         );
       },
     );
@@ -596,7 +596,7 @@ void main() {
 
         await expectLater(
           find.byType(Scene),
-          matchesGoldenFile('goldens/update_layout_0.png'),
+          matchesGoldenFile('goldens/Window/update_layout_0.png'),
         );
 
         position.layoutDelegate.position = const Offset(225, 225);
@@ -607,7 +607,7 @@ void main() {
 
         await expectLater(
           find.byType(Scene),
-          matchesGoldenFile('goldens/update_layout_1.png'),
+          matchesGoldenFile('goldens/Window/update_layout_1.png'),
         );
       },
     );

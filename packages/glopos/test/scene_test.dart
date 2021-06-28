@@ -158,7 +158,7 @@ void main() {
 
       await expectLater(
         find.byType(Scene),
-        matchesGoldenFile('goldens/PositionedBoxLayoutDelegate_layout.png'),
+        matchesGoldenFile('goldens/PositionedBoxLayoutDelegate/layout.png'),
       );
     });
   });
@@ -241,7 +241,7 @@ void main() {
 
       await expectLater(
         find.byType(Scene),
-        matchesGoldenFile('goldens/AlignedBoxLayoutDelegate_layout.png'),
+        matchesGoldenFile('goldens/AlignedBoxLayoutDelegate/layout.png'),
       );
     });
   });
@@ -340,7 +340,7 @@ void main() {
 
       await expectLater(
         find.byType(Scene),
-        matchesGoldenFile('goldens/LayedOutSceneElement_layout.png'),
+        matchesGoldenFile('goldens/LayedOutSceneElement/layout.png'),
       );
     });
 
@@ -374,7 +374,7 @@ void main() {
 
       await expectLater(
         find.byType(Scene),
-        matchesGoldenFile('goldens/LayedOutSceneElement_update_layout_0.png'),
+        matchesGoldenFile('goldens/LayedOutSceneElement/update_layout_0.png'),
       );
 
       element.size = const Size.square(200);
@@ -383,7 +383,7 @@ void main() {
 
       await expectLater(
         find.byType(Scene),
-        matchesGoldenFile('goldens/LayedOutSceneElement_update_layout_1.png'),
+        matchesGoldenFile('goldens/LayedOutSceneElement/update_layout_1.png'),
       );
     });
   });
