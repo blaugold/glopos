@@ -15,7 +15,10 @@ import 'package:flutter/widgets.dart';
 /// [Scene]. To implement your own [SceneElement] extend from one of the
 /// subclasses which implement layout:
 ///
-///  * [LayoutDelegateSceneElement]
+///  * [LayoutDelegateSceneElement] for an element whose size and position is
+///    explicitly specified.
+///  * [LayedOutSceneElement] for an element hose size is explicitly specified
+///    but hose position is determined through the Flutter layout system.
 ///
 /// See also:
 ///
@@ -230,6 +233,8 @@ class AlignedBoxLayoutDelegate extends SceneElementLayoutDelegate
   Widget buildPositioned(BuildContext context, Widget content) => OverflowBox(
         maxHeight: double.infinity,
         maxWidth: double.infinity,
+        minWidth: 0,
+        minHeight: 0,
         alignment: alignment,
         child: Padding(
           padding: padding,
@@ -358,6 +363,90 @@ class LayoutDelegateBuilder<T extends SceneElementLayoutDelegate>
   }
 }
 
+/// A [SceneElement] with a specified size and a position that is determined by
+/// the Flutter layout system.
+///
+/// This type of [SceneElement] is positioned at the location of a
+/// [LayoutSceneElement], in the subtree at [Scene.layout]. The [Scene.layout]
+/// [Widget] tree positions the contained [LayoutSceneElement]s.
+///
+/// The [size] of a [LayedOutSceneElement] cannot be determined through the
+/// Flutter layout system and must be specified for the element.
+/// [LayoutSceneElement]s occupy the size of it's element in the [Scene.layout].
+///
+/// See also:
+///
+///  * [LayoutSceneElement] for the [Widget] which positions a
+///    [LayedOutSceneElement] in [Scene.layout].
+///  * [Scene.layout] for the [Widget] tree which defines the layout of the
+///    [LayedOutSceneElement] of a [Scene].
+abstract class LayedOutSceneElement extends SceneElement {
+  /// Constructor for subclasses.
+  LayedOutSceneElement({required Size size}) : _size = ValueNotifier(size);
+
+  /// The [Size] of this [SceneElement] in the [Scene.layout].
+  Size get size => _size.value;
+  final ValueNotifier<Size> _size;
+
+  set size(Size size) {
+    if (_size.value != size) {
+      _size.value = size;
+      notifyListeners();
+    }
+  }
+
+  @override
+  void dispose() {
+    _size.dispose();
+    super.dispose();
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('size', size));
+  }
+}
+
+/// A [Widget] which positions a [LayedOutSceneElement] within the
+/// [Scene.layout] [Widget] tree.
+class LayoutSceneElement extends StatelessWidget {
+  /// Creates a [Widget] which positions a [LayedOutSceneElement] within the
+  /// [Scene.layout] [Widget] tree.
+  const LayoutSceneElement({
+    Key? key,
+    required this.element,
+    this.child,
+  }) : super(key: key);
+
+  /// The [LayedOutSceneElement] to position within the [Scene.layout] [Widget]
+  /// tree.
+  final LayedOutSceneElement element;
+
+  /// Optional child [Widget] to place at the [element]'s position with the 
+  /// [element]'s size.
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) => CompositedTransformTarget(
+        link: element._layerLink,
+        child: ValueListenableBuilder<Size>(
+          valueListenable: element._size,
+          builder: (context, size, child) => ConstrainedBox(
+            constraints: BoxConstraints.tight(size),
+            child: child,
+          ),
+          child: child,
+        ),
+      );
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('element', element));
+  }
+}
+
 /// Defines a coordinate system to position [SceneElement]s on and a scope
 /// in which child [Window]s can find the [SceneElement]s to present.
 ///
@@ -378,14 +467,21 @@ class Scene extends StatelessWidget {
   const Scene({
     Key? key,
     required this.elements,
+    this.layout,
     required this.child,
   }) : super(key: key);
 
   /// The [SceneElement]s of this scene.
   final List<SceneElement> elements;
 
-  /// The widget whose subtree contains the [Window]s which display this scene's
-  /// [elements].
+  /// The [Widget] tree which positions the [Scene]'s [LayedOutSceneElement]s.
+  ///
+  /// The widget tree of [layout] must contain a [LayoutSceneElement] for each
+  /// [LayedOutSceneElement] in [elements].
+  final Widget? layout;
+
+  /// The [Widget] tree which contains the [Window]s which display this 
+  /// [Scene]'s [elements].
   ///
   /// {@macro flutter.widgets.ProxyWidget.child}
   final Widget child;
@@ -394,7 +490,9 @@ class Scene extends StatelessWidget {
   Widget build(BuildContext context) => _SceneMarker(
         scene: this,
         child: Stack(
+          fit: StackFit.expand,
           children: [
+            if (layout != null) layout!,
             for (final element in elements)
               if (element is LayoutDelegateSceneElement)
                 LayoutDelegateSceneElement._buildSceneWidget(context, element),
@@ -862,6 +960,22 @@ class _WindowState<T extends SceneElement> extends State<Window<T>>
     final delegate = widget.delegate;
     final textDirection = Directionality.of(context);
 
+    // This builder ensures widget is rebuilt during hot reload.
+    Widget child = Builder(
+      builder: (context) => widget.delegate.build(context, element),
+    );
+
+    if (element is LayedOutSceneElement) {
+      child = ValueListenableBuilder<Size>(
+        valueListenable: element._size,
+        builder: (context, size, child) => ConstrainedBox(
+          constraints: BoxConstraints.tight(size),
+          child: child,
+        ),
+        child: child,
+      );
+    }
+
     state.widget = OverflowBox(
       key: ValueKey(element),
       minHeight: 0,
@@ -874,10 +988,7 @@ class _WindowState<T extends SceneElement> extends State<Window<T>>
             delegate.windowElementAnchor(element).resolve(textDirection),
         targetAnchor:
             delegate.sceneElementAnchor(element).resolve(textDirection),
-        // This builder ensures widget is rebuilt during hot reload.
-        child: Builder(
-          builder: (context) => widget.delegate.build(context, element),
-        ),
+        child: child,
       ),
     );
   }

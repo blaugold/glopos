@@ -32,10 +32,8 @@ class ScrollingWindowPage extends StatefulWidget {
 class _ScrollingWindowPageState extends State<ScrollingWindowPage> {
   var _scrollDirection = Axis.vertical;
 
-  final _circle = Shape(
-    layoutDelegate: AlignedBoxLayoutDelegate(
-      size: const Size.square(600),
-    ),
+  final _circle = LayedOutShape(
+    size: const Size.square(600),
     shape: const CircleBorder(),
     shadow: false,
   );
@@ -68,6 +66,13 @@ class _ScrollingWindowPageState extends State<ScrollingWindowPage> {
         ],
         body: Scene(
           elements: [_circle],
+          layout: OverflowBox(
+            maxHeight: double.infinity,
+            maxWidth: double.infinity,
+            minHeight: 0,
+            minWidth: 0,
+            child: LayoutSceneElement(element: _circle),
+          ),
           child: ListView.builder(
             scrollDirection: _scrollDirection,
             itemBuilder: (context, index) {
@@ -135,7 +140,7 @@ class _ScrollingWindow extends StatelessWidget {
               ),
               // Global content of the window.
               Window(
-                delegate: ShapeDelegate(
+                delegate: LayedOutShapeDelegate(
                   color: color,
                 ),
               ),
