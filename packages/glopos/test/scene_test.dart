@@ -495,15 +495,7 @@ class LayoutTestDelegate extends WindowDelegate<LayoutTestElement> {
     BuildContext context,
     LayoutTestElement element,
   ) =>
-      LayoutDelegateBuilder<SizeLayoutDelegate>(
-        element: element,
-        builder: (context, value, child) => SizedBox.fromSize(
-          size: value.size,
-          child: Container(
-            color: element.color,
-          ),
-        ),
-      );
+      Container(color: element.color);
 }
 
 class LayedOutTestElement extends LayedOutSceneElement {

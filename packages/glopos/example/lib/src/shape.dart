@@ -52,12 +52,6 @@ class ShapeDelegate extends WindowDelegate<Shape> {
           shape: shape ?? element.shape,
           color: color ?? element.color,
           elevation: shadow ?? element.shadow ? 8 : 0,
-          child: LayoutDelegateBuilder<SizeLayoutDelegate>(
-            element: element,
-            builder: (context, layoutDelegate, _) => SizedBox.fromSize(
-              size: layoutDelegate.size,
-            ),
-          ),
         ),
       );
 }
@@ -68,7 +62,7 @@ class LayedOutShape extends LayedOutSceneElement {
     this.color = Colors.black,
     required this.shape,
     this.shadow = true,
-  }): super(size: size);
+  }) : super(size: size);
 
   final Color color;
 
