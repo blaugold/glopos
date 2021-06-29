@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../components/main_bar.dart';
 import 'moving_window.dart';
 import 'scrolling_windows.dart';
 import 'spotlight_menu.dart';
@@ -35,8 +36,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: const Text('glopos Demo'),
+        appBar: const MainBar(
+          title: 'glopos Demo',
         ),
         body: ListView(
           children: [
