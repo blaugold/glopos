@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:glopos/glopos.dart';
 
+import '../components/example_scaffold.dart';
 import '../shape.dart';
-import 'example_scaffold.dart';
 
 final _colors = [
   Colors.orange,

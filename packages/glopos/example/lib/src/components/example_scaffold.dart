@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'main_bar.dart';
+
 class ExampleScaffold extends StatelessWidget {
   const ExampleScaffold({
     Key? key,
@@ -23,8 +25,8 @@ class ExampleScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text(title),
+        appBar: MainBar(
+          title: title,
           actions: [
             IconButton(
               onPressed: _openSourceCode,

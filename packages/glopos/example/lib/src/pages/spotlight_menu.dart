@@ -5,7 +5,7 @@ library spotlight_menu;
 import 'package:flutter/material.dart';
 import 'package:glopos/glopos.dart';
 
-import 'example_scaffold.dart';
+import '../components/example_scaffold.dart';
 
 final _backgroundColor = Colors.grey.shade900;
 final _borderColor = Colors.grey.shade800.withOpacity(.75);

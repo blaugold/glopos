@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:glopos/glopos.dart';
 
+import '../components/example_scaffold.dart';
 import '../shape.dart';
-import 'example_scaffold.dart';
 
 class WindowCardsPage extends StatefulWidget {
   const WindowCardsPage({Key? key}) : super(key: key);

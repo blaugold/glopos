@@ -5,8 +5,8 @@ library moving_window;
 import 'package:flutter/material.dart';
 import 'package:glopos/glopos.dart';
 
+import '../components/example_scaffold.dart';
 import '../shape.dart';
-import 'example_scaffold.dart';
 
 /// Background color of the overall example page.
 final _backgroundColor = Colors.grey.shade900;
